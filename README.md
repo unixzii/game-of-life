@@ -20,6 +20,7 @@ This is a simple project that demonstrates how to write a web app without a sing
 * Event handling (including timer, mouse events)
 * Heap memory accessing
 * `Math.random` via [`js-sys`](https://crates.io/crates/js-sys)
+* Less than 500 sloc, no boilerplate interop code (thanks to [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen))
 
 Just try the [online demo](https://unixzii.github.io/game-of-life) here.
 
