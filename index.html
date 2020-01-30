@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game of Life</title>
+</head>
+<body>
+    <script src="./pkg/game_of_life.js"></script>
+    <script>
+        console.log('Loading wasm file...');
+        console.time('wasm_loading');
+        window.wasm_bindgen('./pkg/game_of_life_bg.wasm').then(exports => {
+            console.timeEnd('wasm_loading');
+            console.log('Finished loading wasm file, now starting!');
+            exports.start();
+        });
+    </script>
+</body>
+</html>
