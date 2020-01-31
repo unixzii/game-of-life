@@ -12,6 +12,7 @@ use wasm_bindgen::prelude::*;
 use web_sys;
 use js_sys::Math;
 
+/// Entry point: starts the game.
 #[wasm_bindgen]
 pub fn start() {
     utils::set_panic_hook();

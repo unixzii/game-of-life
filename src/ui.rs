@@ -10,18 +10,21 @@ use web_sys::{
     CanvasRenderingContext2d
 };
 
+/// A struct that represents a point of the world.
 #[derive(Debug)]
 pub struct Point {
     pub x: i32,
     pub y: i32,
 }
 
+/// Used to respond the events sent from the DOM element.
 pub trait Responder {
     fn on_mouse_down(&self, point: Point);
     fn on_mouse_move(&self, point: Point);
     fn on_mouse_up(&self);
 }
 
+/// A wrapper of the [`Responder`] object.
 struct ResponderHolder {
     responder: Option<Box<dyn Responder>>,
 }
@@ -49,6 +52,7 @@ impl ResponderHolder {
 const DEFAULT_WIDTH: i32 = 500;
 const DEFAULT_HEIGHT: i32 = 500;
 
+/// An object that acts as the controller of the canvas DOM elememnt.
 #[allow(dead_code)]
 pub struct Canvas {
     el: HtmlCanvasElement,
@@ -62,6 +66,10 @@ pub struct Canvas {
 }
 
 impl Canvas {
+    /// Creates a new instance with the given [`web_sys::Document`] and world size.
+    /// 
+    /// Calling this method has a side-effect that manipulate the DOM to initialize
+    /// the canvas and related elements.
     pub fn new(document: &Document, rows: i32, cols: i32) -> Canvas {
         let width = DEFAULT_WIDTH as f64;
         let height = DEFAULT_HEIGHT as f64;
@@ -85,6 +93,7 @@ impl Canvas {
         let mut event_handlers: LinkedList<Box<dyn Drop>> = LinkedList::new();
         {
             let event_target: &web_sys::EventTarget = &canvas_el;
+            // The mouse down event:
             {
                 let responder_holder_clone = responder_holder.clone();
                 let mouse_down_cb = 
@@ -102,6 +111,8 @@ impl Canvas {
                 ).unwrap();
                 event_handlers.push_back(mouse_down_cb);
             }
+
+            // The mouse move event:
             {
                 let responder_holder_clone = responder_holder.clone();
                 let mouse_move_cb = 
@@ -119,6 +130,8 @@ impl Canvas {
                 ).unwrap();
                 event_handlers.push_back(mouse_move_cb);
             }
+
+            // The mouse up event:
             {
                 let responder_holder_clone = responder_holder.clone();
                 let mouse_up_cb = 
@@ -131,7 +144,7 @@ impl Canvas {
                 ).unwrap();
                 event_handlers.push_back(mouse_up_cb);
             }
-        }   
+        }
 
         // Then, let's just add some style.
         {

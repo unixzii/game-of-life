@@ -8,6 +8,7 @@ use web_sys::{console, window};
 use crate::ui;
 use crate::engine;
 
+/// The responder object that converts UI events to game operations.
 struct UiResponder {
     state: State,
 }
@@ -39,10 +40,17 @@ impl ui::Responder for UiResponder {
     }
 }
 
+/// The game configuration.
 pub struct Config {
+    /// The time interval of the world generating in milliseconds.
     pub update_interval: i32,
 }
 
+/// An object that represents the whole game state.
+/// 
+/// Any copy of one state object will represent the same game state using
+/// the reference-counting mechanism. New states should always be created
+/// by calling [`State::new`].
 pub struct State {
     inner: Rc<RefCell<StateInner>>,
 }
@@ -57,6 +65,7 @@ struct StateInner {
 }
 
 impl State {
+    /// Creates a new game state with the given canvan, world and configurations.
     pub fn new(canvas: ui::Canvas, world: engine::World, config: Config) -> State {
         let state = State {
             inner: Rc::new(RefCell::new(StateInner {
@@ -75,12 +84,17 @@ impl State {
         return state;
     }
 
+    /// Returns a new object for this state.
+    /// 
+    /// This is useful when you want to use the state in closures, since you cannot
+    /// keep the references of the captured objects.
     pub fn clone(&self) -> State {
         return State {
             inner: self.inner.clone(),
         };
     }
 
+    /// Resumes the evolution.
     pub fn resume(&self) {
         let mut inner = self.get_inner();
         if inner.timer_closure.is_some() {
@@ -100,6 +114,7 @@ impl State {
         inner.timer_id = timer_id;
     }
 
+    /// Pauses the evolution.
     pub fn pause(&self) {
         let mut inner = self.get_inner();
         if inner.timer_closure.is_none() {
